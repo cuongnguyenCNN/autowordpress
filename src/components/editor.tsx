@@ -57,10 +57,3 @@ export default function Editor() {
     </div>
   );
 }
-
-// Tailwind helper styles
-function btnEditorClass(active: boolean) {
-  return active
-    ? "bg-blue-100 text-blue-700 px-2 py-1 rounded-md"
-    : "hover:bg-gray-100 px-2 py-1 rounded-md";
-}

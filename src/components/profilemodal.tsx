@@ -12,7 +12,6 @@ import { usePosts } from "../contexts/postscontext";
 import { EmojiClickData } from "emoji-picker-react";
 
 import EmojiPicker from "emoji-picker-react";
-import ReactMarkdown from "react-markdown";
 type GoogleUser = {
   name: string;
   picture: string;
