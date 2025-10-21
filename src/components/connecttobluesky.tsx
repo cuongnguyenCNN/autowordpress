@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useUser } from "../contexts/userscontext";
-import Link from "next/link";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -41,10 +39,10 @@ export default function BlueskyLoginModal({
         setToken("❌ Không thể lấy token. Vui lòng kiểm tra thông tin!");
       }
     } catch (err) {
-      setToken("Lỗi kết nối đến server hoặc URL không hợp lệ.");
+      setToken("Lỗi kết nối đến server hoặc URL không hợp lệ." + err);
     } finally {
       setLoading(false);
-      onSuccess();
+      // onSuccess();
     }
   };
   if (!isOpen) return null;
