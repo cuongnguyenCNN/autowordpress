@@ -42,6 +42,7 @@ export default function Scheduled() {
                 <ProfileModal
                   isOpen={openModalCreate}
                   onClose={() => setOpenModalCreate(false)}
+                  content=""
                 />
               </div>
             </div>
