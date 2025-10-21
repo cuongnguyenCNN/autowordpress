@@ -31,7 +31,10 @@ export async function POST(req: Request) {
 
     // Nếu đúng, trả về token
     return NextResponse.json({ token: `Basic ${token}` });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return NextResponse.json({ error: err.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: "Lỗi không xác định" }, { status: 500 });
   }
 }

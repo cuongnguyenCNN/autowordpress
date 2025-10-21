@@ -1,13 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { BskyAgent } from "@atproto/api";
 import Link from "next/link";
 import { useUser } from "../contexts/userscontext";
 import { supabase } from "../lib/supabaseClient";
 import "react-datepicker/dist/react-datepicker.css";
 import { SocialAccount } from "../types";
-import axios from "axios";
-import GraphemeSplitter from "grapheme-splitter";
 import { usePosts } from "../contexts/postscontext";
 import { EmojiClickData } from "emoji-picker-react";
 
@@ -293,45 +290,45 @@ export default function ProfileModal({
   };
 
   const removeFile = () => setMedia(null);
-  function isTokenExpired(expireAt: string) {
-    return new Date(expireAt).getTime() < Date.now();
-  }
-  async function refreshAccessTokenForYouTube(refreshToken: string) {
-    const client_id = process.env.GOOGLE_CLIENT_ID;
-    const client_secret = process.env.GOOGLE_CLIENT_SECRET;
-    const res = await fetch("https://oauth2.googleapis.com/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: client_id!,
-        client_secret: client_secret!,
-        refresh_token: refreshToken,
-        grant_type: "refresh_token",
-      }).toString(),
-    });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(`Refresh token failed: ${JSON.stringify(error)}`);
-    }
-    const data = await res.json();
-    return {
-      accessToken: data.access_token,
-      refreshToken: data.refresh_token,
-      expireAt: new Date(Date.now() + data.expires_in * 1000).toISOString(),
-    };
-  }
+  // function isTokenExpired(expireAt: string) {
+  //   return new Date(expireAt).getTime() < Date.now();
+  // }
+  // async function refreshAccessTokenForYouTube(refreshToken: string) {
+  //   const client_id = process.env.GOOGLE_CLIENT_ID;
+  //   const client_secret = process.env.GOOGLE_CLIENT_SECRET;
+  //   const res = await fetch("https://oauth2.googleapis.com/token", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //     },
+  //     body: new URLSearchParams({
+  //       client_id: client_id!,
+  //       client_secret: client_secret!,
+  //       refresh_token: refreshToken,
+  //       grant_type: "refresh_token",
+  //     }).toString(),
+  //   });
+  //   if (!res.ok) {
+  //     const error = await res.json();
+  //     throw new Error(`Refresh token failed: ${JSON.stringify(error)}`);
+  //   }
+  //   const data = await res.json();
+  //   return {
+  //     accessToken: data.access_token,
+  //     refreshToken: data.refresh_token,
+  //     expireAt: new Date(Date.now() + data.expires_in * 1000).toISOString(),
+  //   };
+  // }
 
-  interface CustomError {
-    response?: {
-      status?: number;
-      data?: {
-        error?: string;
-      };
-    };
-    error?: string;
-  }
+  // interface CustomError {
+  //   response?: {
+  //     status?: number;
+  //     data?: {
+  //       error?: string;
+  //     };
+  //   };
+  //   error?: string;
+  // }
   const uploadToWordpress = async () => {
     try {
       const res = await fetch("/api/post", {
@@ -344,7 +341,9 @@ export default function ProfileModal({
       alert(
         data.success ? "✅ Đăng bài thành công!" : "❌ Lỗi: " + data.message
       );
-    } catch (error) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
