@@ -42,7 +42,7 @@ export default function BlueskyLoginModal({
       setToken("Lỗi kết nối đến server hoặc URL không hợp lệ." + err);
     } finally {
       setLoading(false);
-      // onSuccess();
+      onSuccess();
     }
   };
   if (!isOpen) return null;
