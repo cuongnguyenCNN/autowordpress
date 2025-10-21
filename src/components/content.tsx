@@ -2507,7 +2507,7 @@ export default function Content() {
             <div className="relative aspect-video w-full rounded-xl overflow-hidden shadow-2xl">
               <iframe
                 src="https://www.youtube.com/embed/c0ALsm_7yH0?rel=0"
-                title="LinkPost Demo"
+                title="AutoWordpress Demo"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 className="absolute inset-0 w-full h-full"
               ></iframe>

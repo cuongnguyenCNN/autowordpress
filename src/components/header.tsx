@@ -26,7 +26,7 @@ export default function Header() {
           <div className="flex flex-1 items-center">
             <Link className="inline-flex" aria-label="SiteToSocials" href="/">
               {/* <img
-                alt="LinkPost"
+                alt="AutoWordpress"
                 width="141"
                 height="35"
                 decoding="async"
@@ -34,7 +34,7 @@ export default function Header() {
                 src="/landing/images/socialrails-logo-4.svg"
                 style={convertStyleStringToObject("color: transparent;")}
               /> */}
-              <b>LinkPost</b>
+              <b>AutoWordpress</b>
             </Link>
           </div>
           <nav className="hidden md:flex md:grow">

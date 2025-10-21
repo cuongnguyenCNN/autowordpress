@@ -27,7 +27,7 @@ export default function Footer() {
             <div>
               <Link className="inline-flex" aria-label="SiteToSocials" href="/">
                 {/* <img
-                  alt="LinkPost"
+                  alt="AutoWordpress"
                   width="141"
                   height="35"
                   decoding="async"
@@ -35,11 +35,11 @@ export default function Footer() {
                   src="/landing/images/socialrails-logo-4.svg"
                   style={convertStyleStringToObject("color: transparent;")}
                 /> */}
-                LinkPost
+                AutoWordpress
               </Link>
             </div>
             <div className="text-sm text-gray-600">
-              © LinkPost - All rights reserved.
+              © AutoWordpress - All rights reserved.
             </div>
           </div>
           <div className="space-y-2 sm:col-span-6 md:col-span-3 lg:col-span-2">
@@ -114,7 +114,7 @@ export default function Footer() {
               <li>
                 <Link
                   className="text-gray-600 text-sm transition hover:text-gray-900"
-                  href="mailto:contact@LinkPost.com?subject=Contact%LinkPost"
+                  href="mailto:contact@AutoWordpress.com?subject=Contact%AutoWordpress"
                 >
                   contact@postsbridge.com
                 </Link>
@@ -174,7 +174,7 @@ export default function Footer() {
         >
           Telegram
         </a>{" "}
-        to buy source LinkPost.
+        to buy source AutoWordpress.
       </div>
     </footer>
   );

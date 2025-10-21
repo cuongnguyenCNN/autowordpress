@@ -37,7 +37,7 @@ export default function BlogLayout({
                 <div className="flex items-center justify-between p-3">
                   <Link className="flex items-center" href="/dashboard">
                     {/* <img
-                      alt="LinkPost"
+                      alt="AutoWordpress"
                       fetchPriority="high"
                       width="120"
                       height="30"
@@ -46,7 +46,7 @@ export default function BlogLayout({
                       src="/landing/images/socialrails-logo-4.svg"
                       style={convertStyleStringToObject("color: transparent;")}
                     /> */}
-                    <b>LinkPost</b>
+                    <b>AutoWordpress</b>
                   </Link>
                   <button
                     className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground rounded-full w-9 h-9"

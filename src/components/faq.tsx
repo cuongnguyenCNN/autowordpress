@@ -4,19 +4,19 @@ import { useState } from "react";
 
 const faqs = [
   {
-    question: "Getting started with LinkPost",
+    question: "Getting started with AutoWordpress",
     answer:
-      "To get started with LinkPost, simply sign up for an account, connect your social media platforms, and explore the dashboard to begin scheduling or managing your content.",
+      "To get started with AutoWordpress, simply sign up for an account, connect your social media platforms, and explore the dashboard to begin scheduling or managing your content.",
   },
   {
     question: "Which social media platforms do you support?",
     answer:
-      "LinkPost supports popular social media platforms including Facebook, Instagram, Twitter, LinkedIn, and YouTube.",
+      "AutoWordpress supports popular social media platforms including Facebook, Instagram, Twitter, LinkedIn, and YouTube.",
   },
   {
     question: "Can I manage multiple workspaces?",
     answer:
-      "Yes, LinkPost allows you to manage multiple workspaces, making it ideal for agencies or teams handling several brands.",
+      "Yes, AutoWordpress allows you to manage multiple workspaces, making it ideal for agencies or teams handling several brands.",
   },
   {
     question: "How to change my subscription plan",
@@ -44,7 +44,7 @@ const faqs = [
       "Go to the 'Social Accounts' tab in your dashboard and select the platform you'd like to connect. Follow the authorization steps to complete the connection.",
   },
   {
-    question: "Are social media connections secure with LinkPost?",
+    question: "Are social media connections secure with AutoWordpress?",
     answer:
       "Yes, all social media connections are secured using industry-standard encryption protocols and OAuth authentication to protect your data.",
   },

@@ -51,7 +51,7 @@ export default function SideBar({ isOpen, onClose }: SidebarProps) {
               <div className="flex-shrink-0 mb-1 max-h-[600px]:mb-0.5 sm:mb-4 md:mb-6 hidden lg:block">
                 <Link href="/dashboard">
                   {/* <img
-                  alt="LinkPost"
+                  alt="AutoWordpress"
                   fetchPriority="high"
                   width="130"
                   height="32"
@@ -61,7 +61,7 @@ export default function SideBar({ isOpen, onClose }: SidebarProps) {
                   src="/landing/images/socialrails-logo-4.svg"
                   style={convertStyleStringToObject("color: transparent;")}
                 /> */}
-                  <b>LinkPost</b>
+                  <b>AutoWordpress</b>
                 </Link>
               </div>
               <div className="flex-shrink-0 mb-1.5 max-h-[600px]:mb-1 sm:mb-3 xl:mb-4">
@@ -367,7 +367,7 @@ export default function SideBar({ isOpen, onClose }: SidebarProps) {
               <div className="flex-shrink-0 mb-1 max-h-[600px]:mb-0.5 sm:mb-4 md:mb-6 hidden lg:block">
                 <Link href="/dashboard">
                   {/* <img
-                  alt="LinkPost"
+                  alt="AutoWordpress"
                   fetchPriority="high"
                   width="130"
                   height="32"
@@ -377,7 +377,7 @@ export default function SideBar({ isOpen, onClose }: SidebarProps) {
                   src="/landing/images/socialrails-logo-4.svg"
                   style={convertStyleStringToObject("color: transparent;")}
                 /> */}
-                  <b>LinkPost</b>
+                  <b>AutoWordpress</b>
                 </Link>
               </div>
               <div className="flex-shrink-0 mb-1.5 max-h-[600px]:mb-1 sm:mb-3 xl:mb-4">

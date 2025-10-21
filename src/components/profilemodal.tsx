@@ -51,7 +51,7 @@ function convertStyleStringToObject(styleString: string) {
 //   "YouTube",
 //   "TikTok",
 // ];
-const platformsList = ["Twitter/X", "LinkedIn", "Bluesky", "YouTube"];
+const platformsList = ["Wordpress"];
 export default function ProfileModal({
   isOpen,
   onClose,
@@ -61,19 +61,16 @@ export default function ProfileModal({
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [title, setTitle] = useState("");
+  const [titlepost, setTitlepost] = useState("");
   const [startDateInput, setStartDateInput] = useState(
     new Date().toISOString().slice(0, 16)
   );
-  // const [description, setDescription] = useState("");
   const { user, fetchUser } = useUser();
   const { fetchPosts } = usePosts();
-  // const [accessToken, setAccessToken] = useState("");
-  // const [accessSecret, setAccessSecret] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [selectedSocialAccounts, setSelectedSocialAccounts] = useState<
     SocialAccount[]
   >([]);
-  // const [scheduledTime, setScheduledTime] = useState<Date | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const validateForm = (action: "postNow" | "scheduled" | "draft"): boolean => {
     const validationErrors: string[] = [];
@@ -106,15 +103,18 @@ export default function ProfileModal({
       const platform = selectedPlatforms[index];
       try {
         switch (platform) {
-          case "Bluesky":
-            await uploadToBlueSky();
+          // case "Bluesky":
+          //   await uploadToBlueSky();
+          //   break;
+          case "Wordpress":
+            await uploadToWordpress();
             break;
-          case "Twitter/X":
-            await uploadToTwitter();
-            break;
-          case "YouTube":
-            await uploadToYouTube();
-            break;
+          // case "Twitter/X":
+          //   await uploadToTwitter();
+          //   break;
+          // case "YouTube":
+          //   await uploadToYouTube();
+          //   break;
           // case "TikTok":
           //   return uploadToYouTube;
           // case "Facebook":
@@ -125,9 +125,9 @@ export default function ProfileModal({
           //   return uploadToYouTube;
           // case "Pinterest":
           //   return uploadToYouTube;
-          case "LinkedIn":
-            await uploadToLinkedIn();
-            break;
+          // case "LinkedIn":
+          //   await uploadToLinkedIn();
+          //   break;
           default:
             console.warn(`Platform ${platform} chưa được hỗ trợ`);
             continue;
@@ -203,16 +203,6 @@ export default function ProfileModal({
     }
     await fetchUser();
     onClose();
-
-    // const res = await fetch("/api/upload/schedule-post", {
-    //   method: "POST",
-    //   body: formData,
-    // });
-    // const jsonRes = await res.json();
-    // console.log(jsonRes.success ? "upload success" : jsonRes.error ?? "Error");
-    // alert(
-    //   (await res.json()).success ? "Scheduled Success" : "Scheduled Failed"
-    // );
   };
   const handleSubmitDraftPost = async () => {
     if (!validateForm("draft")) return;
@@ -332,131 +322,7 @@ export default function ProfileModal({
       expireAt: new Date(Date.now() + data.expires_in * 1000).toISOString(),
     };
   }
-  const uploadToYouTube = async () => {
-    const data = selectedSocialAccounts.filter(
-      (data) => data.provider === "youtube"
-    )[0];
-    let access_token = data.access_token;
-    if (isTokenExpired(data.expires_at)) {
-      try {
-        const refreshed = await refreshAccessTokenForYouTube(
-          data.refresh_token || ""
-        );
-        await supabase
-          .from("social_accounts")
-          .update({
-            access_token: refreshed.accessToken,
-            refresh_token: refreshed.refreshToken,
-            expires_at: refreshed.expireAt,
-            connected: true,
-          })
-          .eq("user_id", data.user_id)
-          .eq("provider", "youtube");
-        access_token = refreshed.accessToken;
-      } catch (err) {
-        console.error("Failed to refresh token", err);
-        return new Response("Unauthorized", {
-          status: 401,
-        });
-      }
-    }
-    if (!media || !data.access_token)
-      throw new Error("Token or media Youtube is not availabe");
 
-    try {
-      const initiateResumable = await fetch(
-        "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            "Content-Type": "application/json; charset=UTF-8",
-            "X-Upload-Content-Length": media.size.toString(),
-            "X-Upload-Content-Type": media.type,
-          },
-          body: JSON.stringify({
-            snippet: {
-              title,
-              description: "description",
-            },
-            status: {
-              privacyStatus: "public",
-            },
-          }),
-        }
-      );
-
-      if (!initiateResumable.ok) throw new Error("Failed to initiate upload");
-
-      const uploadUrl = initiateResumable.headers.get("Location");
-
-      const uploadResponse = await fetch(uploadUrl!, {
-        method: "PUT",
-        headers: {
-          "Content-Type": media.type,
-          "Content-Length": media.size.toString(),
-        },
-        body: media,
-      });
-
-      if (!uploadResponse.ok) throw new Error("Failed to upload video");
-
-      const uploadedVideoData = await uploadResponse.json();
-      console.log("Upload thành công Youtube!", uploadedVideoData);
-    } catch (err) {
-      console.error("Upload Failed Youtube!", err);
-      throw err;
-    }
-  };
-  const uploadToTwitter = async () => {
-    const data = selectedSocialAccounts.filter(
-      (data) => data.provider === "twitter/x"
-    )[0];
-    if (!media || !data.access_token) {
-      throw new Error("Token Twitter Failed!!!");
-    }
-    const formData = new FormData();
-    formData.append("accessToken", data.access_token);
-    formData.append("accessSecret", data.access_secret);
-    formData.append("title", title);
-    // formData.append("media", media || ""); // `file` là File từ input
-    try {
-      const res = await fetch("/api/upload/twitter", {
-        method: "POST",
-        body: formData,
-      });
-
-      // const result = await res.json();
-      if (!res.ok) throw new Error("Twitter API lỗi");
-    } catch (err) {
-      const error = err as Error;
-      console.error("❗ Lỗi nội bộ Twitter:", error.message ?? "");
-      throw error;
-    }
-  };
-  const uploadToLinkedIn = async () => {
-    const data = selectedSocialAccounts.filter(
-      (data) => data.provider === "linkedin"
-    )[0];
-    const formData = new FormData();
-    formData.append("token", data.access_token);
-    formData.append("personId", data.channel_id); //     formData.append("accessSecret", accessSecret);
-    formData.append("title", title);
-    formData.append("media", media || ""); // `file` là File từ input
-    console.log("LinkedIn uploaded:", title);
-    try {
-      const res = await fetch("/api/upload/linkedin", {
-        method: "POST",
-        body: formData,
-      });
-
-      const json = await res.json();
-      alert(json.success ? "Upload thành công!" : "Upload thất bại!");
-    } catch (error) {
-      console.error("Upload LinkedIn Faile", error);
-      throw error;
-    }
-  };
   interface CustomError {
     response?: {
       status?: number;
@@ -466,112 +332,19 @@ export default function ProfileModal({
     };
     error?: string;
   }
-  const uploadToBlueSky = async () => {
-    const data = selectedSocialAccounts.filter(
-      (data) => data.provider === "bluesky"
-    )[0];
-    const agent = new BskyAgent({ service: "https://bsky.social" });
-    const byteArray = media
-      ? new Uint8Array(await media.arrayBuffer())
-      : new Uint8Array();
-    const isImage = media?.type.startsWith("image/");
-    const isVideo = media?.type.startsWith("video/");
-    const accessJwt = localStorage.getItem("access_token_bluesky")!;
-    const refreshJwt = localStorage.getItem("refresh_token_bluesky")!;
+  const uploadToWordpress = async () => {
     try {
-      const splitter = new GraphemeSplitter();
-      const graphemes = splitter.splitGraphemes(title);
-
-      const trimmedContent = graphemes.slice(0, 300).join("");
-      agent.resumeSession({
-        accessJwt: accessJwt,
-        refreshJwt: refreshJwt,
-        handle: data.account_name,
-        did: data.channel_id,
-        active: true,
+      const res = await fetch("/api/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ titlepost, title }),
       });
-      const uploaded = await agent.uploadBlob(byteArray, {
-        encoding: media?.type,
-      });
-      if (isImage) {
-        // Bài đăng ảnh
-        await agent.post({
-          text: trimmedContent,
-          embed: {
-            $type: "app.bsky.embed.images",
-            images: [
-              {
-                image: uploaded.data.blob,
-                alt: media?.name || "Upload Image",
-              },
-            ],
-          },
-        });
-      } else if (isVideo) {
-        // Gắn link đến video (giả định bạn đã upload video ra nơi công khai)
-        // Hoặc có thể để link đến IPFS, YouTube, Cloudflare Stream, v.v.
-        const blobUrl = media ? URL.createObjectURL(media) : "";
 
-        await agent.post({
-          text: trimmedContent,
-          embed: {
-            $type: "app.bsky.embed.external",
-            external: {
-              uri: blobUrl || "", // 👈 Link công khai tới video
-              title: trimmedContent,
-              description: trimmedContent,
-              thumb: uploaded.data.blob, // Thumbnail
-            },
-          },
-        });
-      }
-
-      // Thông báo khi thành công
-      alert("✅ Đã đăng bài thành công lên Bluesky!");
-      console.log("✅ Đã đăng bài sau khi làm mới token.");
-    } catch (error) {
-      const err = error as CustomError;
-      if (err?.response?.status === 400 || err?.error === "ExpiredToken") {
-        console.log("🔁 Access token hết hạn. Đang làm mới...");
-
-        try {
-          const res = await axios.post(
-            "https://bsky.social/xrpc/com.atproto.server.refreshSession",
-            null,
-            {
-              headers: {
-                Authorization: `Bearer ${data.refresh_token}`,
-              },
-            }
-          );
-          await supabase.from("social_accounts").upsert(
-            {
-              user_id: user?.id,
-              provider: "bluesky",
-              account_name: res.data.handle, // Assuming you have this value
-              access_token: res.data.accessJwt,
-              channel_id: res.data.did,
-              refresh_token: res.data.refreshJwt,
-              channel_title: res.data.handle,
-              connected: true,
-            },
-            { onConflict: "user_id,provider" }
-          );
-          localStorage.setItem("access_token_bluesky", res.data.accessJwt);
-          localStorage.setItem("refresh_token_bluesky", res.data.refreshJwt);
-
-          // Thử lại hành động
-          await uploadToBlueSky();
-          return;
-        } catch (refreshError) {
-          console.error("❌ Làm mới token thất bại", refreshError);
-          throw refreshError;
-        }
-      } else {
-        console.error("❌ Lỗi đăng bài", err);
-        throw err;
-      }
-    }
+      const data = await res.json();
+      alert(
+        data.success ? "✅ Đăng bài thành công!" : "❌ Lỗi: " + data.message
+      );
+    } catch (error) {}
   };
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -978,6 +751,13 @@ export default function ProfileModal({
                             </div>
                           </div>
                           <div className="relative px-2 sm:px-0">
+                            <input
+                              placeholder="Write title"
+                              className="w-full rounded-md border border-gray-300 bg-white p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                              value={titlepost}
+                              onChange={(e) => setTitlepost(e.target.value)}
+                            />
+
                             <textarea
                               ref={textareaRef}
                               value={title}
@@ -992,6 +772,7 @@ export default function ProfileModal({
                                 "white-space: pre-wrap; height: 202px;"
                               )}
                             ></textarea>
+
                             <div className="absolute bottom-4 right-4 flex items-center gap-2 max-w-[90%] justify-end">
                               <div className="relative flex items-center gap-2 ml-auto">
                                 <div
@@ -1470,6 +1251,20 @@ export default function ProfileModal({
                                     </svg>
                                   ) : null}
                                   {platform === "Bluesky" ? (
+                                    <svg
+                                      stroke="currentColor"
+                                      fill="currentColor"
+                                      stroke-width="0"
+                                      viewBox="0 0 576 512"
+                                      className="h-5 w-5 text-[#3087FF]"
+                                      height="1em"
+                                      width="1em"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path d="M407.8 294.7c-3.3-.4-6.7-.8-10-1.3c3.4 .4 6.7 .9 10 1.3zM288 227.1C261.9 176.4 190.9 81.9 124.9 35.3C61.6-9.4 37.5-1.7 21.6 5.5C3.3 13.8 0 41.9 0 58.4S9.1 194 15 213.9c19.5 65.7 89.1 87.9 153.2 80.7c3.3-.5 6.6-.9 10-1.4c-3.3 .5-6.6 1-10 1.4C74.3 308.6-9.1 342.8 100.3 464.5C220.6 589.1 265.1 437.8 288 361.1c22.9 76.7 49.2 222.5 185.6 103.4c102.4-103.4 28.1-156-65.8-169.9c-3.3-.4-6.7-.8-10-1.3c3.4 .4 6.7 .9 10 1.3c64.1 7.1 133.6-15.1 153.2-80.7C566.9 194 576 75 576 58.4s-3.3-44.7-21.6-52.9c-15.8-7.1-40-14.9-103.2 29.8C385.1 81.9 314.1 176.4 288 227.1z"></path>
+                                    </svg>
+                                  ) : null}
+                                  {platform === "Wordpress" ? (
                                     <svg
                                       stroke="currentColor"
                                       fill="currentColor"

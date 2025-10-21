@@ -1,5 +1,6 @@
 //import Link from "next/link";
 "use client";
+import BlueskyLoginModal from "@/src/components/connecttobluesky";
 import PricingModal from "@/src/components/pricingModal";
 import { useUser } from "@/src/contexts/userscontext";
 import { supabase } from "@/src/lib/supabaseClient";
@@ -54,7 +55,7 @@ export default function Settings() {
       const { error } = await supabase
         .from("social_accounts") // tên bảng của bạn
         .update({ connected: false })
-        .eq("provider", "linkedin")
+        .eq("provider", "bluesky")
         .eq("user_id", user?.id);
 
       if (error) throw error;
@@ -64,16 +65,16 @@ export default function Settings() {
       console.log("❌ Failed to unauthorize LinkedIn", err);
     }
   };
-  const connectTwitter = () => {
-    window.location.href = `/api/oauth/twitter?user_id=${user?.id}`;
-  };
-  const connectLinkedIn = () => {
-    window.location.href = `/api/oauth/linkedin?user_id=${user?.id}`;
-  };
   const percentage = Math.min(
     ((user?.post_used ?? 0) / (user?.post_limit ?? 1)) * 100,
     100
   );
+  const [showModal, setShowModal] = useState(false);
+  const handleSuccess = () => {
+    console.log("Session saved:");
+    setShowModal(false);
+    // lưu sessionData vào localStorage hoặc backend tùy bạn
+  };
   useEffect(() => {
     const getUser = async () => {
       await supabase.auth.getSession();
@@ -177,18 +178,19 @@ export default function Settings() {
                                   stroke="currentColor"
                                   fill="currentColor"
                                   strokeWidth="0"
-                                  viewBox="0 0 448 512"
-                                  className="h-5 w-5"
+                                  role="img"
+                                  viewBox="0 0 24 24"
+                                  className="h-5 w-5 text-[#0085FF]"
                                   height="1em"
                                   width="1em"
                                   xmlns="http://www.w3.org/2000/svg"
                                 >
-                                  <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm297.1 84L257.3 234.6 379.4 396H283.8L209 298.1 123.3 396H75.8l111-126.9L69.7 116h98l67.7 89.5L313.6 116h47.5zM323.3 367.6L153.4 142.9H125.1L296.9 367.6h26.3z"></path>
+                                  <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z"></path>
                                 </svg>
-                                <span className="font-medium">Twitter/X</span>
+                                <span className="font-medium">Wordpress</span>
                               </div>
                               {data?.filter(
-                                (provider) => provider.provider === "twitter/x"
+                                (provider) => provider.provider === "bluesky"
                               )[0] && (
                                 <div className="flex items-center gap-3 bg-[#F5F5F5] px-3 py-2 rounded-xl">
                                   <div className="relative w-6 h-6 rounded-full overflow-hidden">
@@ -201,7 +203,7 @@ export default function Settings() {
                                       src={
                                         data?.filter(
                                           (provider) =>
-                                            provider.provider === "twitter/x"
+                                            provider.provider === "bluesky"
                                         )[0]?.avatar_url
                                       }
                                       style={convertStyleStringToObject(
@@ -214,7 +216,7 @@ export default function Settings() {
                                     {
                                       data?.filter(
                                         (provider) =>
-                                          provider.provider === "twitter/x"
+                                          provider.provider === "bluesky"
                                       )[0]?.account_name
                                     }
                                   </span>
@@ -223,85 +225,10 @@ export default function Settings() {
                             </div>
                             <div className="w-full sm:w-auto">
                               {data?.filter(
-                                (provider) => provider.provider === "twitter/x"
-                              )[0]?.connected ? (
-                                <button className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 bg-[#E0FCE7] rounded-xl hover:bg-red-300 transition-colors duration-300 group w-full sm:w-auto">
-                                  <span className="group-hover:hidden text-[#388543] flex items-center gap-1">
-                                    ✓ Connected
-                                  </span>
-                                  <span className="hidden group-hover:inline text-[#B22510]">
-                                    Unauthorize
-                                  </span>
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={connectTwitter}
-                                  className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-xl"
-                                >
-                                  Connect Twitter
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 md:p-4 rounded-2xl border bg-card text-card-foreground shadow-sm gap-3 sm:gap-0">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
-                              <div className="flex items-center gap-2">
-                                <svg
-                                  stroke="currentColor"
-                                  fill="currentColor"
-                                  strokeWidth="0"
-                                  viewBox="0 0 448 512"
-                                  className="h-5 w-5 text-[#2368C5]"
-                                  height="1em"
-                                  width="1em"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path>
-                                </svg>
-                                <span className="font-medium">LinkedIn</span>
-                              </div>{" "}
-                              {data?.filter(
-                                (provider) => provider.provider === "linkedin"
-                              )[0] && (
-                                <div className="flex items-center gap-3 bg-[#F5F5F5] px-3 py-2 rounded-xl">
-                                  <div className="relative w-6 h-6 rounded-full overflow-hidden">
-                                    <img
-                                      alt="Nguyen Ngoc Cuong's avatar"
-                                      loading="lazy"
-                                      decoding="async"
-                                      data-nimg="fill"
-                                      className="object-cover shadow-md"
-                                      src={
-                                        data?.filter(
-                                          (provider) =>
-                                            provider.provider === "linkedin"
-                                        )[0]?.avatar_url
-                                      }
-                                      style={convertStyleStringToObject(
-                                        "position: absolute; height: 100%; width: 100%; inset: 0px; color: transparent;"
-                                      )}
-                                    />
-                                  </div>
-                                  <span className="text-sm text-muted-foreground">
-                                    @
-                                    {
-                                      data?.filter(
-                                        (provider) =>
-                                          provider.provider === "linkedin"
-                                      )[0]?.account_name
-                                    }
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                            <div className="w-full sm:w-auto">
-                              {data?.filter(
-                                (provider) =>
-                                  provider.provider === "linkedin" &&
-                                  isTokenExpired(provider.expires_at)
+                                (provider) => provider.provider === "bluesky"
                               )[0]?.connected ? (
                                 <button
-                                  onClick={unauthorizeLinkedIn}
+                                  onClick={() => unauthorizeLinkedIn()}
                                   className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 bg-[#E0FCE7] rounded-xl hover:bg-red-300 transition-colors duration-300 group w-full sm:w-auto"
                                 >
                                   <span className="group-hover:hidden text-[#388543] flex items-center gap-1">
@@ -313,13 +240,20 @@ export default function Settings() {
                                 </button>
                               ) : (
                                 <button
-                                  onClick={connectLinkedIn}
+                                  onClick={() => setShowModal(true)}
                                   className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-xl"
                                 >
-                                  Connect LinkedIn
+                                  Connect Website
                                 </button>
                               )}
                             </div>
+                            {showModal && (
+                              <BlueskyLoginModal
+                                isOpen={showModal}
+                                onClose={() => setShowModal(false)}
+                                onSuccess={handleSuccess}
+                              />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -428,7 +362,7 @@ export default function Settings() {
                             </label>
                             <input
                               id="businessName"
-                              placeholder="e.g., LinkPost"
+                              placeholder="e.g., AutoWordpress"
                               className="w-full px-3 py-2 rounded-lg border bg-background text-sm"
                               type="text"
                               value=""

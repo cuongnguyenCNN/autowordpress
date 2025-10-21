@@ -97,7 +97,8 @@ export default function Home() {
                       data-aos="zoom-y-out"
                       data-aos-delay="300"
                     >
-                      Use Linkpost to grow website without spending hours on it.
+                      Use AutoWordpress to grow website without spending hours
+                      on it.
                     </p>
                     <div
                       className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mb-8 aos-init aos-animate"
@@ -325,7 +326,7 @@ export default function Home() {
                         <p className="text-gray-700 text-sm italic mb-2">
                           &quot;If you value your time and want to upgrade your
                           content creation workflow, you absolutely need
-                          LinkPost.&quot;
+                          AutoWordpress.&quot;
                         </p>
                         <div className="flex items-center gap-1 mb-2">
                           <svg
@@ -393,7 +394,7 @@ export default function Home() {
                   >
                     <div className="relative mx-auto transition-transform duration-500">
                       {/* <img
-                        alt="LinkPost Calendar Preview"
+                        alt="AutoWordpress Calendar Preview"
                         fetchPriority="high"
                         width="1915"
                         height="902"
@@ -406,7 +407,7 @@ export default function Home() {
                         )}
                       /> */}
                       <img
-                        alt="LinkPost Calendar Preview"
+                        alt="AutoWordpress Calendar Preview"
                         fetchPriority="high"
                         width="1915"
                         height="902"
@@ -1652,7 +1653,7 @@ export default function Home() {
               <div className="max-w-3xl mx-auto text-center pb-8 md:pb-12">
                 <div className="inline-flex items-center justify-center p-1 mb-4 text-blue-600 bg-blue-100 rounded-full">
                   <span className="px-3 py-1 text-sm font-medium">
-                    Why LinkPost?
+                    Why AutoWordpress?
                   </span>
                 </div>
                 <p className="text-xl text-gray-600">
@@ -1679,7 +1680,9 @@ export default function Home() {
                           ></path>
                         </svg>
                       </div>
-                      <h3 className="text-xl font-bold mb-2">With LinkPost</h3>
+                      <h3 className="text-xl font-bold mb-2">
+                        With AutoWordpress
+                      </h3>
                     </div>
                     <ul className="text-gray-600 space-y-3 mb-6 flex-grow">
                       <li className="flex items-start">

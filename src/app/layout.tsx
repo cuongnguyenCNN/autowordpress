@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LinkPost ",
+  title: "AutoWordpress ",
   description: "grow without posting everyday",
 };
 

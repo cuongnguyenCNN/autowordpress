@@ -68,7 +68,7 @@ export default function AffiliateProgram() {
             <div className="text-center mb-16">
               <div className="animate-fade-in">
                 <h1 className="text-4xl mt-4 font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-6">
-                  LinkPost Affiliate Program
+                  AutoWordpress Affiliate Program
                 </h1>
                 <p className="max-w-2xl mx-auto text-xl text-gray-500 mb-8">
                   Join Our Affiliate Program And Earn 50% Recurring Commission
@@ -94,7 +94,7 @@ export default function AffiliateProgram() {
               </div>
               <div className="mt-4 animate-fade-in max-w-2xl mx-auto">
                 <img
-                  alt="LinkPost Affiliate Program"
+                  alt="AutoWordpress Affiliate Program"
                   fetchPriority="high"
                   width="800"
                   height="800"
@@ -108,11 +108,11 @@ export default function AffiliateProgram() {
             </div>
             <div className="bg-white rounded-2xl shadow-xl p-8 mb-16 animate-fade-in">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                How The LinkPost Referral Program Works
+                How The AutoWordpress Referral Program Works
               </h2>
               <p className="text-xl text-gray-800 mb-8 leading-relaxed">
                 Earn 50% recurring commission for every customer you refer to
-                LinkPost. We handle the product, support, and billing - you
+                AutoWordpress. We handle the product, support, and billing - you
                 focus on spreading the word and earning passive income.
               </p>
               <div className="grid md:grid-cols-2 gap-8">
