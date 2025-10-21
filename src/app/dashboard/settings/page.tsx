@@ -33,14 +33,14 @@ function convertStyleStringToObject(styleString: string) {
 
   return styleObject;
 }
-function isTokenExpired(
-  expires_at: string | Date,
-  bufferSeconds: number = 60
-): boolean {
-  const expiresAt = new Date(expires_at).getTime(); // convert to ms
-  const now = Date.now();
-  return expiresAt - now > bufferSeconds * 1000;
-}
+// function isTokenExpired(
+//   expires_at: string | Date,
+//   bufferSeconds: number = 60
+// ): boolean {
+//   const expiresAt = new Date(expires_at).getTime(); // convert to ms
+//   const now = Date.now();
+//   return expiresAt - now > bufferSeconds * 1000;
+// }
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("socialmedia");
