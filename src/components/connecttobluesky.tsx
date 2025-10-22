@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "../lib/supabaseClient";
+import { useUser } from "../contexts/userscontext";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -17,32 +19,86 @@ export default function BlueskyLoginModal({
   const [loading, setLoading] = useState(false);
   const [siteUrl, setSiteUrl] = useState(""); // 🆕 URL WordPress site
   const [token, setToken] = useState("");
+  const { user, fetchUser } = useUser();
+  const [errors, setErrors] = useState<{
+    siteUrl?: string;
+    username?: string;
+    appPassword?: string;
+  }>({});
+  const validate = () => {
+    const newErrors: typeof errors = {};
 
+    if (!siteUrl.trim())
+      newErrors.siteUrl = "Vui lòng nhập URL website WordPress.";
+    else if (!/^https?:\/\/[^\s$.?#].[^\s]*$/.test(siteUrl))
+      newErrors.siteUrl = "URL không hợp lệ. Hãy bao gồm http hoặc https.";
+
+    if (!username.trim())
+      newErrors.username = "Vui lòng nhập tên tài khoản WordPress.";
+    if (!appPassword.trim())
+      newErrors.appPassword = "Vui lòng nhập Application Password.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const verifyWordPressToken = async (siteUrl: string, basicToken: string) => {
+    const res = await fetch(`${siteUrl}/wp-json/wp/v2/users/me`, {
+      headers: {
+        Authorization: `Basic ${basicToken}`, // ✅ cần thêm "Basic "
+      },
+    });
+
+    if (!res.ok) throw new Error("Invalid token or credentials");
+    return await res.json(); // ✅ trả về thông tin user WordPress
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    if (!validate()) return;
+    // setLoading(true);
     setToken("");
 
     try {
-      const res = await fetch("/api/get-token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ siteUrl, username, appPassword }),
-      });
+      const basicToken = Buffer.from(`${username}:${appPassword}`).toString(
+        "base64"
+      );
+
+      // ✅ Xác thực token bằng cách gọi API users/me
+      const wpUser = await verifyWordPressToken(siteUrl, basicToken);
+      console.log("✅ WordPress user verified:", wpUser);
+      // ✅ Lưu thông tin cục bộ
       localStorage.setItem("access_site_url", siteUrl);
       localStorage.setItem("access_username", username);
-      localStorage.setItem("access_username1", appPassword);
-      const data = await res.json();
-      if (data.token) {
-        setToken(data.token);
-      } else {
-        setToken("❌ Không thể lấy token. Vui lòng kiểm tra thông tin!");
+      localStorage.setItem("access_token", `Basic ${basicToken}`);
+      debugger;
+      console.log("Ping Supabase:", { data, error });
+      // ✅ Lưu thông tin vào Supabase
+      const { error: upsertError } = await supabase
+        .from("social_accounts")
+        .upsert(
+          {
+            user_id: user?.id,
+            provider: "wordpress",
+            account_name: username,
+            access_token: basicToken,
+            connected: true,
+            last_verified: new Date(),
+          } // ✅ đúng kiểu
+        )
+        .select();
+
+      if (upsertError) {
+        console.error("❌ Supabase error:", upsertError.message);
+        setToken("Lỗi khi lưu thông tin tài khoản vào hệ thống.");
+        return;
       }
-    } catch (err) {
-      setToken("Lỗi kết nối đến server hoặc URL không hợp lệ." + err);
+
+      // ✅ Hiển thị token cho người dùng
+      setToken(`Basic ${basicToken}`);
+    } catch (err: unknown) {
+      console.error("❌ Error verifying token:", err);
+      setToken("Lỗi kết nối đến server hoặc thông tin không hợp lệ.");
     } finally {
       setLoading(false);
-      onSuccess();
     }
   };
   if (!isOpen) return null;
@@ -63,6 +119,9 @@ export default function BlueskyLoginModal({
               onChange={(e) => setSiteUrl(e.target.value)}
               className="border p-2 rounded-md"
             />
+            {errors.siteUrl && (
+              <p className="text-red-500 text-sm mt-1">{errors.siteUrl}</p>
+            )}
             <input
               type="text"
               placeholder="Username (tài khoản WordPress)"
@@ -70,6 +129,9 @@ export default function BlueskyLoginModal({
               onChange={(e) => setUsername(e.target.value)}
               className="border p-2 rounded-md"
             />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+            )}
             <input
               type="password"
               placeholder="Application Password"
@@ -77,6 +139,9 @@ export default function BlueskyLoginModal({
               onChange={(e) => setAppPassword(e.target.value)}
               className="border p-2 rounded-md"
             />
+            {errors.appPassword && (
+              <p className="text-red-500 text-sm mt-1">{errors.appPassword}</p>
+            )}
             <button
               type="submit"
               disabled={loading}

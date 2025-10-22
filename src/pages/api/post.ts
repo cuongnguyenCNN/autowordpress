@@ -10,15 +10,11 @@ export default async function handler(
   const { title, content, status = "publish" } = req.body;
 
   try {
-    const response = await fetch(process.env.WP_API_URL!, {
+    const response = await fetch(localStorage.getItem("access_site_url")!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "Basic " +
-          Buffer.from(
-            `${process.env.WP_USER}:${process.env.WP_APP_PASS}`
-          ).toString("base64"),
+        Authorization: `${localStorage.getItem("access_token")}`,
       },
       body: JSON.stringify({
         title,

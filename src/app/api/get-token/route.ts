@@ -9,7 +9,6 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-
   try {
     // WordPress App Password dùng Basic Auth
     const token = Buffer.from(`${username}:${appPassword}`).toString("base64");
@@ -20,7 +19,8 @@ export async function POST(req: Request) {
         Authorization: `Basic ${token}`,
       },
     });
-
+    const text = await res.text();
+    console.log(text);
     if (!res.ok) {
       const errorText = await res.text();
       return NextResponse.json(
