@@ -19,7 +19,7 @@ export default function BlueskyLoginModal({
   const [loading, setLoading] = useState(false);
   const [siteUrl, setSiteUrl] = useState(""); // 🆕 URL WordPress site
   const [token, setToken] = useState("");
-  const { user, fetchUser } = useUser();
+  const { user } = useUser();
   const [errors, setErrors] = useState<{
     siteUrl?: string;
     username?: string;
@@ -70,7 +70,6 @@ export default function BlueskyLoginModal({
       localStorage.setItem("access_username", username);
       localStorage.setItem("access_token", `Basic ${basicToken}`);
       debugger;
-      console.log("Ping Supabase:", { data, error });
       // ✅ Lưu thông tin vào Supabase
       const { error: upsertError } = await supabase
         .from("social_accounts")
@@ -99,6 +98,7 @@ export default function BlueskyLoginModal({
       setToken("Lỗi kết nối đến server hoặc thông tin không hợp lệ.");
     } finally {
       setLoading(false);
+      onSuccess();
     }
   };
   if (!isOpen) return null;
