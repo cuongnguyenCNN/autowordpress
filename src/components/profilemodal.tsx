@@ -290,57 +290,32 @@ export default function ProfileModal({
   };
 
   const removeFile = () => setMedia(null);
-  // function isTokenExpired(expireAt: string) {
-  //   return new Date(expireAt).getTime() < Date.now();
-  // }
-  // async function refreshAccessTokenForYouTube(refreshToken: string) {
-  //   const client_id = process.env.GOOGLE_CLIENT_ID;
-  //   const client_secret = process.env.GOOGLE_CLIENT_SECRET;
-  //   const res = await fetch("https://oauth2.googleapis.com/token", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/x-www-form-urlencoded",
-  //     },
-  //     body: new URLSearchParams({
-  //       client_id: client_id!,
-  //       client_secret: client_secret!,
-  //       refresh_token: refreshToken,
-  //       grant_type: "refresh_token",
-  //     }).toString(),
-  //   });
-  //   if (!res.ok) {
-  //     const error = await res.json();
-  //     throw new Error(`Refresh token failed: ${JSON.stringify(error)}`);
-  //   }
-  //   const data = await res.json();
-  //   return {
-  //     accessToken: data.access_token,
-  //     refreshToken: data.refresh_token,
-  //     expireAt: new Date(Date.now() + data.expires_in * 1000).toISOString(),
-  //   };
-  // }
-
-  // interface CustomError {
-  //   response?: {
-  //     status?: number;
-  //     data?: {
-  //       error?: string;
-  //     };
-  //   };
-  //   error?: string;
-  // }
   const uploadToWordpress = async () => {
     try {
-      const res = await fetch("/api/post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ titlepost, title }),
-      });
-
-      const data = await res.json();
-      alert(
-        data.success ? "✅ Đăng bài thành công!" : "❌ Lỗi: " + data.message
+      debugger;
+      const response = await fetch(
+        `${localStorage.getItem("access_site_url")}` + "/wp-json/wp/v2/posts",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("access_token")}`,
+          },
+          body: JSON.stringify({
+            title: titlepost,
+            content: title,
+            status: "publish",
+          }),
+        }
       );
+      // const res = await fetch("/api/post", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ titlepost, title }),
+      // });
+
+      const data = await response.json();
+      alert(data.id ? "✅ Đăng bài thành công!" : "❌ Lỗi: " + data.message);
     } catch (err) {
       console.log(err);
     }
@@ -1206,13 +1181,13 @@ export default function ProfileModal({
                               <div className="flex items-center justify-between w-full max-sm:flex-col max-sm:items-start max-sm:gap-1">
                                 <div className="flex items-center space-x-2">
                                   <input
-                                    disabled={
-                                      !selectedSocialAccounts.some(
-                                        (account) =>
-                                          account.provider ===
-                                          platform.toLocaleLowerCase()
-                                      )
-                                    }
+                                    // disabled={
+                                    //   !selectedSocialAccounts.some(
+                                    //     (account) =>
+                                    //       account.provider ===
+                                    //       platform.toLocaleLowerCase()
+                                    //   )
+                                    // }
                                     type="checkbox"
                                     value={platform}
                                     onChange={handleCheckboxChange}

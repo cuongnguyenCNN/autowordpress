@@ -7,21 +7,25 @@ export default async function handler(
   if (req.method !== "POST")
     return res.status(405).json({ message: "Method not allowed" });
 
-  const { title, content, status = "publish" } = req.body;
+  const { title, titlePost, status = "publish" } = req.body;
 
   try {
-    const response = await fetch(localStorage.getItem("access_site_url")!, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("access_token")}`,
-      },
-      body: JSON.stringify({
-        title,
-        content,
-        status,
-      }),
-    });
+    debugger;
+    const response = await fetch(
+      `${localStorage.getItem("access_site_url")}` + "/wp-json/wp/v2/posts",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${localStorage.getItem("access_token")}`,
+        },
+        body: JSON.stringify({
+          titlePost,
+          title,
+          status,
+        }),
+      }
+    );
 
     const data = await response.json();
     if (!response.ok) return res.status(response.status).json(data);
