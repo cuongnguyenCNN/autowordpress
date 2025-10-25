@@ -9,6 +9,7 @@ import { usePosts } from "../contexts/postscontext";
 import { EmojiClickData } from "emoji-picker-react";
 
 import EmojiPicker from "emoji-picker-react";
+import { useSocialAccounts } from "../contexts/socialaccountcontext";
 type GoogleUser = {
   name: string;
   picture: string;
@@ -37,17 +38,6 @@ function convertStyleStringToObject(styleString: string) {
 
   return styleObject;
 }
-// const platformsList = [
-//   "Twitter/X",
-//   "LinkedIn",
-//   "Bluesky",
-//   "Threads",
-//   "Pinterest",
-//   "Instagram",
-//   "Facebook",
-//   "YouTube",
-//   "TikTok",
-// ];
 const platformsList = ["Wordpress"];
 export default function ProfileModal({
   isOpen,
@@ -64,6 +54,7 @@ export default function ProfileModal({
   );
   const { user, fetchUser } = useUser();
   const { fetchPosts } = usePosts();
+  const { socialAccounts, fetchSocialAccount } = useSocialAccounts();
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [selectedSocialAccounts, setSelectedSocialAccounts] = useState<
     SocialAccount[]
@@ -100,31 +91,9 @@ export default function ProfileModal({
       const platform = selectedPlatforms[index];
       try {
         switch (platform) {
-          // case "Bluesky":
-          //   await uploadToBlueSky();
-          //   break;
           case "Wordpress":
             await uploadToWordpress();
             break;
-          // case "Twitter/X":
-          //   await uploadToTwitter();
-          //   break;
-          // case "YouTube":
-          //   await uploadToYouTube();
-          //   break;
-          // case "TikTok":
-          //   return uploadToYouTube;
-          // case "Facebook":
-          //   return uploadToYouTube;
-          // case "Instagram":
-          //   return uploadToYouTube;
-          // case "Threads":
-          //   return uploadToYouTube;
-          // case "Pinterest":
-          //   return uploadToYouTube;
-          // case "LinkedIn":
-          //   await uploadToLinkedIn();
-          //   break;
           default:
             console.warn(`Platform ${platform} chưa được hỗ trợ`);
             continue;
@@ -167,12 +136,12 @@ export default function ProfileModal({
         mediaUrl = supabase.storage.from("uploads").getPublicUrl(filePath)
           .data.publicUrl;
       }
-      debugger;
       const { data, error } = await supabase
         .from("posts")
         .insert({
           user_id: user?.id,
           content: title,
+          title: titlepost,
           media_url: mediaUrl,
           scheduled_time: startDateInput,
           platforms: platformsString,
@@ -308,11 +277,6 @@ export default function ProfileModal({
           }),
         }
       );
-      // const res = await fetch("/api/post", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ titlepost, title }),
-      // });
 
       const data = await response.json();
       alert(data.id ? "✅ Đăng bài thành công!" : "❌ Lỗi: " + data.message);
@@ -395,20 +359,20 @@ export default function ProfileModal({
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isOpen, content]);
   useEffect(() => {
-    const fetchToken = async () => {
-      const { data, error } = await supabase
-        .from("social_accounts")
-        .select("*")
-        .eq("user_id", user?.id);
-      if (data) {
-        setSelectedSocialAccounts(data);
-      } else {
-        console.error("Error fetching token", error);
-      }
-    };
+    // const fetchToken = async () => {
+    //   const { data, error } = await supabase
+    //     .from("social_accounts")
+    //     .select("*")
+    //     .eq("user_id", user?.id);
+    //   if (data) {
+    //     setSelectedSocialAccounts(data);
+    //   } else {
+    //     console.error("Error fetching token", error);
+    //   }
+    // };
 
     if (user?.id) {
-      fetchToken();
+      setSelectedSocialAccounts(socialAccounts);
     }
   }, [user?.id]);
 

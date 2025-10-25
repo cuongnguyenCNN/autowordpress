@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useUser } from "../contexts/userscontext";
+import { useSocialAccounts } from "../contexts/socialaccountcontext";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ export default function BlueskyLoginModal({
   const [siteUrl, setSiteUrl] = useState(""); // 🆕 URL WordPress site
   const [token, setToken] = useState("");
   const { user } = useUser();
+  const { socialAccounts, fetchSocialAccount, addSocialAccount } =
+    useSocialAccounts();
   const [errors, setErrors] = useState<{
     siteUrl?: string;
     username?: string;
@@ -49,6 +52,7 @@ export default function BlueskyLoginModal({
     });
 
     if (!res.ok) throw new Error("Invalid token or credentials");
+
     return await res.json(); // ✅ trả về thông tin user WordPress
   };
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,25 +75,19 @@ export default function BlueskyLoginModal({
       localStorage.setItem("access_token", `Basic ${basicToken}`);
       debugger;
       // ✅ Lưu thông tin vào Supabase
-      const { error: upsertError } = await supabase
-        .from("social_accounts")
-        .upsert(
-          {
-            user_id: user?.id,
-            provider: "wordpress",
-            account_name: username,
-            access_token: basicToken,
-            connected: true,
-            last_verified: new Date(),
-          } // ✅ đúng kiểu
-        )
-        .select();
-
-      if (upsertError) {
-        console.error("❌ Supabase error:", upsertError.message);
-        setToken("Lỗi khi lưu thông tin tài khoản vào hệ thống.");
-        return;
-      }
+      await addSocialAccount({
+        user_id: user?.id || "",
+        provider: "wordpress",
+        account_name: username,
+        access_token: basicToken,
+        connected: true,
+        created_at: new Date().toISOString(),
+      });
+      // if (data) {
+      //   console.error("❌ Supabase error:", data);
+      //   setToken("Lỗi khi lưu thông tin tài khoản vào hệ thống.");
+      //   return;
+      // }
 
       // ✅ Hiển thị token cho người dùng
       setToken(`Basic ${basicToken}`);
