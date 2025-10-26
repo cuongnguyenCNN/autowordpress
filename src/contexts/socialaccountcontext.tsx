@@ -16,7 +16,7 @@ interface SocialAccountContextProps {
   socialAccounts: SocialAccount[];
   loading: boolean;
   fetchSocialAccount: (userId: string) => Promise<void>;
-  addSocialAccount: (account: SocialAccount) => Promise<void>;
+  addSocialAccount: (account: SocialAccount) => Promise<SocialAccount[]>;
   removeSocialAccount: (id: string) => Promise<void>;
   updateSocialAccount: (
     id: string,
@@ -55,15 +55,22 @@ export const SocialAccountProvider = ({
     setLoading(false);
   };
 
-  // ✅ Thêm tài khoản mới
   const addSocialAccount = async (account: SocialAccount) => {
+    console.log("📦 addSocialAccount() called with:", account);
+
     const { data, error } = await supabase
       .from("social_accounts")
-      .insert([account])
+      .upsert([account], { onConflict: "user_id, provider" })
       .select();
 
-    if (error) console.error("Add error:", error);
-    else setSocialAccounts((prev) => [...prev, ...(data || [])]);
+    if (error) {
+      console.error("❌ Supabase Add error:", error);
+      throw error; // ⚠️ Cực kỳ quan trọng để hàm gọi catch được
+    }
+
+    console.log("✅ Supabase Add success:", data);
+    setSocialAccounts((prev) => [...prev, ...(data || [])]);
+    return data; // ⚠️ Bắt buộc có return để chỗ gọi nhận được phản hồi
   };
 
   // ✅ Xóa tài khoản theo id

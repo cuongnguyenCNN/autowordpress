@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useUser } from "../contexts/userscontext";
 import { useSocialAccounts } from "../contexts/socialaccountcontext";
+import { Award } from "lucide-react";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -75,14 +76,16 @@ export default function BlueskyLoginModal({
       localStorage.setItem("access_token", `Basic ${basicToken}`);
       debugger;
       // ✅ Lưu thông tin vào Supabase
-      await addSocialAccount({
+      const res = await addSocialAccount({
         user_id: user?.id || "",
         provider: "wordpress",
-        account_name: username,
-        access_token: basicToken,
+        account_name: username || "",
+        access_token: `Basic ${basicToken}` || "",
         connected: true,
         created_at: new Date().toISOString(),
       });
+
+      console.log("✅ Saved to Supabase:", res);
       // if (data) {
       //   console.error("❌ Supabase error:", data);
       //   setToken("Lỗi khi lưu thông tin tài khoản vào hệ thống.");
@@ -96,7 +99,6 @@ export default function BlueskyLoginModal({
       setToken("Lỗi kết nối đến server hoặc thông tin không hợp lệ.");
     } finally {
       setLoading(false);
-      onSuccess();
     }
   };
   if (!isOpen) return null;

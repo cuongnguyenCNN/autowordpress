@@ -54,7 +54,8 @@ export default function ProfileModal({
   );
   const { user, fetchUser } = useUser();
   const { fetchPosts } = usePosts();
-  const { socialAccounts, fetchSocialAccount } = useSocialAccounts();
+  const { socialAccounts, fetchSocialAccount, addSocialAccount } =
+    useSocialAccounts();
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [selectedSocialAccounts, setSelectedSocialAccounts] = useState<
     SocialAccount[]
@@ -121,6 +122,7 @@ export default function ProfileModal({
     formData.append("media", media || "");
     let mediaUrl = null;
     const platformsString = selectedPlatforms.join(",");
+    debugger;
     try {
       if (media && media instanceof File) {
         const filePath = `media/${Date.now()}-${media.name}`;
@@ -301,7 +303,7 @@ export default function ProfileModal({
       }
     }, 0);
   };
-  const maxChars = 300;
+  const maxChars = 3000;
 
   // Hàm đếm ký tự không tính khoảng trắng
   const countCharacters = (input: string) => {
@@ -1313,6 +1315,20 @@ export default function ProfileModal({
                                   <Link
                                     href="/dashboard/settings"
                                     onClick={() => {
+                                      addSocialAccount({
+                                        user_id: user?.id || "",
+                                        provider: "wordpress",
+                                        account_name:
+                                          localStorage.getItem(
+                                            "access_username"
+                                          ) || "",
+                                        access_token:
+                                          localStorage.getItem(
+                                            "access_token"
+                                          ) || "",
+                                        connected: true,
+                                        created_at: new Date().toISOString(),
+                                      });
                                       onClose(); // hoặc setOpen(false)
                                     }}
                                     className="text-sm max-sm:text-xs text-muted-foreground hover:text-primary hover:underline flex items-center gap-2"

@@ -97,6 +97,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
     setUser(null);
+    localStorage.removeItem("sb-iqthffdhrpeyjkzihfnl-auth-token");
     router.push("/");
   };
 

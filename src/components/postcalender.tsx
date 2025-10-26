@@ -49,6 +49,7 @@ const platformIconMap: Record<string, JSX.Element> = {
   threads: <SiThreads className="text-black" />,
   bluesky: <SiBluesky className="text-blue-400" />,
   "twitter/x": <SiX className="text-black" />,
+  wordpress: <SiBluesky className="text-blue-400" />,
 };
 
 const mapPostsToEvents = (posts: Post[]): CalendarEvent[] => {
