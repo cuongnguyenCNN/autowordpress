@@ -7,9 +7,21 @@ import "react-datepicker/dist/react-datepicker.css";
 import { SocialAccount } from "../types";
 import { usePosts } from "../contexts/postscontext";
 import { EmojiClickData } from "emoji-picker-react";
-
+import { marked } from "marked";
 import EmojiPicker from "emoji-picker-react";
 import { useSocialAccounts } from "../contexts/socialaccountcontext";
+import dynamic from "next/dynamic";
+// import { Dialog } from "@headlessui/react";
+// import MarkdownIt from "markdown-it";
+// import ReactMarkdown from "react-markdown";
+import "react-quill/dist/quill.snow.css";
+import "react-markdown-editor-lite/lib/index.css";
+// const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+// load editor dynamically (vì editor không chạy SSR)
+// const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
+//   ssr: false,
+// });
+const MDEditor1 = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 type GoogleUser = {
   name: string;
   picture: string;
@@ -49,6 +61,7 @@ export default function ProfileModal({
   const [uploading, setUploading] = useState(false);
   const [title, setTitle] = useState("");
   const [titlepost, setTitlepost] = useState("");
+  const contentRef = useRef<HTMLDivElement>(null);
   const [startDateInput, setStartDateInput] = useState(
     new Date().toISOString().slice(0, 16)
   );
@@ -79,6 +92,31 @@ export default function ProfileModal({
     setErrors(validationErrors);
     return validationErrors.length === 0;
   };
+
+  // const mdParser = new MarkdownIt({
+  //   html: true,
+  //   linkify: true,
+  //   typographer: true,
+  // });
+  // function isSpace(ch: string) {
+  //   return /\s/.test(ch);
+  // }
+  function convertToBase64(file: File) {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+    });
+  }
+  // const handleImageUpload = async (file: File) => {
+  //   // Cách 1: Upload tạm thời (base64, demo)
+  //   const base64 = await convertToBase64(file);
+  //   return base64;
+  // };
+  // const handleEditorChange = ({ text }: any) => {
+  //   setTitle(text);
+  // };
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     setSelectedPlatforms((prev) =>
@@ -261,9 +299,35 @@ export default function ProfileModal({
   };
 
   const removeFile = () => setMedia(null);
+  const uploadImage = async (file: File): Promise<number | null> => {
+    const response = await fetch(
+      `${localStorage.getItem("access_site_url")}/wp-json/wp/v2/media`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Disposition": `attachment; filename="${file.name}"`,
+          Authorization: `${localStorage.getItem("access_token")}`,
+        },
+        body: file,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Upload image failed");
+    }
+
+    const data = await response.json();
+    return data.id; // id của media
+  };
   const uploadToWordpress = async () => {
     try {
       debugger;
+      let mediaId: number | null = null;
+
+      if (media) {
+        mediaId = await uploadImage(media);
+      }
+
       const response = await fetch(
         `${localStorage.getItem("access_site_url")}` + "/wp-json/wp/v2/posts",
         {
@@ -274,8 +338,9 @@ export default function ProfileModal({
           },
           body: JSON.stringify({
             title: titlepost,
-            content: title,
+            content: contentRef.current?.innerText || "",
             status: "publish",
+            ...(mediaId && { featured_media: mediaId }),
           }),
         }
       );
@@ -352,6 +417,7 @@ export default function ProfileModal({
   };
   useEffect(() => {
     if (isOpen) {
+      const htmlContent = marked.parse(content);
       setTitle(content || "");
     }
     const handleEsc = (e: KeyboardEvent) => {
@@ -361,18 +427,6 @@ export default function ProfileModal({
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isOpen, content]);
   useEffect(() => {
-    // const fetchToken = async () => {
-    //   const { data, error } = await supabase
-    //     .from("social_accounts")
-    //     .select("*")
-    //     .eq("user_id", user?.id);
-    //   if (data) {
-    //     setSelectedSocialAccounts(data);
-    //   } else {
-    //     console.error("Error fetching token", error);
-    //   }
-    // };
-
     if (user?.id) {
       setSelectedSocialAccounts(socialAccounts);
     }
@@ -698,7 +752,7 @@ export default function ProfileModal({
                               onChange={(e) => setTitlepost(e.target.value)}
                             />
 
-                            <textarea
+                            {/* <textarea
                               ref={textareaRef}
                               value={title}
                               onChange={(e) => {
@@ -711,8 +765,41 @@ export default function ProfileModal({
                               style={convertStyleStringToObject(
                                 "white-space: pre-wrap; height: 202px;"
                               )}
-                            ></textarea>
-
+                            ></textarea> */}
+                            {/* <ReactQuill
+                              theme="snow"
+                              value={title}
+                              onChange={setTitle}
+                              className="h-[400px] mb-8"
+                            /> */}
+                            <MDEditor1
+                              value={title}
+                              onChange={(value) => {
+                                if (countCharacters(title) <= maxChars) {
+                                  setTitle(value || "");
+                                }
+                              }}
+                              height={500}
+                            />
+                            {/* <MdEditor
+                              value={title}
+                              style={{ height: "500px" }}
+                              renderHTML={(title) => mdParser.render(title)}
+                              onChange={handleEditorChange}
+                              onImageUpload={handleImageUpload}
+                              config={{
+                                view: {
+                                  html: true, // Chỉ hiển thị phần render HTML
+                                },
+                              }}
+                            /> */}
+                            {/* <div
+                              id="contentMarkdown"
+                              ref={contentRef}
+                              className="p-4 border rounded-md bg-gray-50 overflow-auto min-h-[300px]"
+                            >
+                              <ReactMarkdown>{title}</ReactMarkdown>
+                            </div> */}
                             <div className="absolute bottom-4 right-4 flex items-center gap-2 max-w-[90%] justify-end">
                               <div className="relative flex items-center gap-2 ml-auto">
                                 <div
@@ -1325,6 +1412,10 @@ export default function ProfileModal({
                                         access_token:
                                           localStorage.getItem(
                                             "access_token"
+                                          ) || "",
+                                        url:
+                                          localStorage.getItem(
+                                            "access_site_url"
                                           ) || "",
                                         connected: true,
                                         created_at: new Date().toISOString(),
