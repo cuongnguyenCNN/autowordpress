@@ -14,8 +14,6 @@ import dynamic from "next/dynamic";
 // import { Dialog } from "@headlessui/react";
 // import MarkdownIt from "markdown-it";
 // import ReactMarkdown from "react-markdown";
-import "react-quill/dist/quill.snow.css";
-import "react-markdown-editor-lite/lib/index.css";
 // const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 // load editor dynamically (vì editor không chạy SSR)
 // const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
