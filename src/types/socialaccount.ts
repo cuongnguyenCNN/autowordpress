@@ -10,6 +10,7 @@ export interface SocialAccount {
   channel_id?: string;
   channel_title?: string;
   avatar_url?: string;
+  url?: string;
   expires_at?: string; // ISO format nếu lưu dạng string, hoặc `Date` nếu dùng kiểu timestamp
   created_at?: string; // nếu Supabase tự tạo
   updated_at?: string; // nếu có

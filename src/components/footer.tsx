@@ -164,7 +164,7 @@ export default function Footer() {
           <div className="h-50 w-56 rounded-full border-[20px] border-blue-700 blur-[80px] will-change-[filter]"></div>
         </div>
       </div> */}
-      <div className="text-center text-2xl bg-gray-300 py-5">
+      {/* <div className="text-center text-2xl bg-gray-300 py-5">
         Let contact on{" "}
         <a
           href="https://t.me/cuongnguyencnn1"
@@ -175,7 +175,7 @@ export default function Footer() {
           Telegram
         </a>{" "}
         to buy source AutoWordpress.
-      </div>
+      </div> */}
     </footer>
   );
 }
