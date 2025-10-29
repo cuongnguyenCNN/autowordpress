@@ -334,7 +334,7 @@ export default function ProfileModal({
           },
           body: JSON.stringify({
             title: titlepost,
-            content: contentRef.current?.innerText || "",
+            content: title || "",
             status: "publish",
             ...(mediaId && { featured_media: mediaId }),
           }),
