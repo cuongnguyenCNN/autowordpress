@@ -58,7 +58,7 @@ export default function ProfileModal({
   const [uploading, setUploading] = useState(false);
   const [title, setTitle] = useState("");
   const [titlepost, setTitlepost] = useState("");
-  const contentRef = useRef<HTMLDivElement>(null);
+  // const contentRef = useRef<HTMLDivElement>(null);
   const [startDateInput, setStartDateInput] = useState(
     new Date().toISOString().slice(0, 16)
   );
