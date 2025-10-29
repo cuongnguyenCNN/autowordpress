@@ -5,7 +5,6 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { SocialAccount } from "../types/socialaccount";
 import { supabase } from "../lib/supabaseClient";
 import { useUser } from "./userscontext";

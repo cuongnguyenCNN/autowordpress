@@ -7,7 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { SocialAccount } from "../types";
 import { usePosts } from "../contexts/postscontext";
 import { EmojiClickData } from "emoji-picker-react";
-import { marked } from "marked";
 import EmojiPicker from "emoji-picker-react";
 import { useSocialAccounts } from "../contexts/socialaccountcontext";
 import dynamic from "next/dynamic";
