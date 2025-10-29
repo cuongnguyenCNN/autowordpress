@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
 import { useUser } from "../contexts/userscontext";
 import { useSocialAccounts } from "../contexts/socialaccountcontext";
-import { Award } from "lucide-react";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -22,8 +20,7 @@ export default function BlueskyLoginModal({
   const [siteUrl, setSiteUrl] = useState(""); // 🆕 URL WordPress site
   const [token, setToken] = useState("");
   const { user } = useUser();
-  const { socialAccounts, fetchSocialAccount, addSocialAccount } =
-    useSocialAccounts();
+  const { addSocialAccount } = useSocialAccounts();
   const [errors, setErrors] = useState<{
     siteUrl?: string;
     username?: string;
@@ -99,6 +96,7 @@ export default function BlueskyLoginModal({
       setToken("Lỗi kết nối đến server hoặc thông tin không hợp lệ.");
     } finally {
       setLoading(false);
+      onSuccess();
     }
   };
   if (!isOpen) return null;
@@ -145,6 +143,18 @@ export default function BlueskyLoginModal({
             <button
               type="submit"
               disabled={loading}
+              onClick={() => {
+                debugger;
+                addSocialAccount({
+                  user_id: user?.id || "",
+                  provider: "wordpress",
+                  account_name: localStorage.getItem("access_username") || "",
+                  access_token: localStorage.getItem("access_token") || "",
+                  url: localStorage.getItem("access_site_url") || "",
+                  connected: true,
+                  created_at: new Date().toISOString(),
+                });
+              }}
               className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-400"
             >
               {loading ? "Đang lấy token..." : "Lấy Token"}

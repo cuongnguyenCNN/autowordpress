@@ -65,8 +65,7 @@ export default function ProfileModal({
   );
   const { user, fetchUser } = useUser();
   const { fetchPosts } = usePosts();
-  const { socialAccounts, fetchSocialAccount, addSocialAccount } =
-    useSocialAccounts();
+  const { socialAccounts, addSocialAccount } = useSocialAccounts();
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [selectedSocialAccounts, setSelectedSocialAccounts] = useState<
     SocialAccount[]
@@ -99,14 +98,14 @@ export default function ProfileModal({
   // function isSpace(ch: string) {
   //   return /\s/.test(ch);
   // }
-  function convertToBase64(file: File) {
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-    });
-  }
+  // function convertToBase64(file: File) {
+  //   return new Promise<string>((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onload = () => resolve(reader.result as string);
+  //     reader.onerror = reject;
+  //   });
+  // }
   // const handleImageUpload = async (file: File) => {
   //   // Cách 1: Upload tạm thời (base64, demo)
   //   const base64 = await convertToBase64(file);
@@ -366,7 +365,7 @@ export default function ProfileModal({
       }
     }, 0);
   };
-  const maxChars = 3000;
+  const maxChars = 5000;
 
   // Hàm đếm ký tự không tính khoảng trắng
   const countCharacters = (input: string) => {
@@ -415,7 +414,6 @@ export default function ProfileModal({
   };
   useEffect(() => {
     if (isOpen) {
-      const htmlContent = marked.parse(content);
       setTitle(content || "");
     }
     const handleEsc = (e: KeyboardEvent) => {
