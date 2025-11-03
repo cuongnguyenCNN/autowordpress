@@ -157,7 +157,7 @@ export default function ProfileModal({
     formData.append("media", media || "");
     let mediaUrl = null;
     const platformsString = selectedPlatforms.join(",");
-    const htmlContent = marked.parse(content);
+    const htmlContent = marked.parse(title);
     try {
       if (media && media instanceof File) {
         const filePath = `media/${Date.now()}-${media.name}`;
@@ -177,8 +177,8 @@ export default function ProfileModal({
         .from("posts")
         .insert({
           user_id: user?.id,
-          content: title,
-          title: htmlContent,
+          content: htmlContent,
+          title: titlepost,
           media_url: mediaUrl,
           scheduled_time: startDateInput,
           platforms: platformsString,
@@ -318,7 +318,7 @@ export default function ProfileModal({
   };
 
   const uploadToWordpress = async () => {
-    const htmlContent = marked.parse(content);
+    const htmlContent = marked.parse(title);
     try {
       debugger;
       let mediaId: number | null = null;
