@@ -10,6 +10,7 @@ import { EmojiClickData } from "emoji-picker-react";
 import EmojiPicker from "emoji-picker-react";
 import { useSocialAccounts } from "../contexts/socialaccountcontext";
 import dynamic from "next/dynamic";
+import { marked } from "marked";
 // import { Dialog } from "@headlessui/react";
 // import MarkdownIt from "markdown-it";
 // import ReactMarkdown from "react-markdown";
@@ -156,7 +157,7 @@ export default function ProfileModal({
     formData.append("media", media || "");
     let mediaUrl = null;
     const platformsString = selectedPlatforms.join(",");
-    debugger;
+    const htmlContent = marked.parse(content);
     try {
       if (media && media instanceof File) {
         const filePath = `media/${Date.now()}-${media.name}`;
@@ -177,7 +178,7 @@ export default function ProfileModal({
         .insert({
           user_id: user?.id,
           content: title,
-          title: titlepost,
+          title: htmlContent,
           media_url: mediaUrl,
           scheduled_time: startDateInput,
           platforms: platformsString,
@@ -315,7 +316,9 @@ export default function ProfileModal({
     const data = await response.json();
     return data.id; // id của media
   };
+
   const uploadToWordpress = async () => {
+    const htmlContent = marked.parse(content);
     try {
       debugger;
       let mediaId: number | null = null;
@@ -334,7 +337,7 @@ export default function ProfileModal({
           },
           body: JSON.stringify({
             title: titlepost,
-            content: title || "",
+            content: htmlContent || "",
             status: "publish",
             ...(mediaId && { featured_media: mediaId }),
           }),
