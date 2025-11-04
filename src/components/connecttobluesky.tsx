@@ -20,7 +20,7 @@ export default function BlueskyLoginModal({
   const [siteUrl, setSiteUrl] = useState(""); // 🆕 URL WordPress site
   const [token, setToken] = useState("");
   const { user } = useUser();
-  const { addSocialAccount } = useSocialAccounts();
+  // const { addSocialAccount } = useSocialAccounts();
   const [errors, setErrors] = useState<{
     siteUrl?: string;
     username?: string;
@@ -143,18 +143,6 @@ export default function BlueskyLoginModal({
             <button
               type="submit"
               disabled={loading}
-              onClick={() => {
-                debugger;
-                addSocialAccount({
-                  user_id: user?.id || "",
-                  provider: "wordpress",
-                  account_name: localStorage.getItem("access_username") || "",
-                  access_token: localStorage.getItem("access_token") || "",
-                  url: localStorage.getItem("access_site_url") || "",
-                  connected: true,
-                  created_at: new Date().toISOString(),
-                });
-              }}
               className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-400"
             >
               {loading ? "Đang lấy token..." : "Lấy Token"}
