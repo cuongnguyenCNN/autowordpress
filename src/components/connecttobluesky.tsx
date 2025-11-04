@@ -72,17 +72,17 @@ export default function BlueskyLoginModal({
       localStorage.setItem("access_username", username);
       localStorage.setItem("access_token", `Basic ${basicToken}`);
       debugger;
-      // ✅ Lưu thông tin vào Supabase
-      const res = await addSocialAccount({
-        user_id: user?.id || "",
-        provider: "wordpress",
-        account_name: username || "",
-        access_token: `Basic ${basicToken}` || "",
-        connected: true,
-        created_at: new Date().toISOString(),
-      });
+      // ✅ Lưu thông tin vào Supabases
+      // const res = await addSocialAccount({
+      //   user_id: user?.id || "",
+      //   provider: "wordpress",
+      //   account_name: username || "",
+      //   access_token: `Basic ${basicToken}` || "",
+      //   connected: true,
+      //   created_at: new Date().toISOString(),
+      // });
 
-      console.log("✅ Saved to Supabase:", res);
+      // console.log("✅ Saved to Supabase:", res);
       // if (data) {
       //   console.error("❌ Supabase error:", data);
       //   setToken("Lỗi khi lưu thông tin tài khoản vào hệ thống.");
