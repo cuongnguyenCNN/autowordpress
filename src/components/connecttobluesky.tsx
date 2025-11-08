@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useUser } from "../contexts/userscontext";
 
 interface ProfileModalProps {
   isOpen: boolean;
