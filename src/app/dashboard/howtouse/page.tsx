@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 export default function HowtoUse() {
   useEffect(() => {
@@ -152,7 +152,7 @@ export default function HowtoUse() {
             <p className="text-[#334155] leading-relaxed mb-5">
               Before, I had to sit and write every post and schedule them
               manually for my WordPress sites. It took hours each day, and I
-              still felt like I couldn't keep up.
+              still felt like I couldnt keep up.
             </p>
 
             <p className="text-[#334155] leading-relaxed mb-5">

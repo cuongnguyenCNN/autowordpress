@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useUser } from "../contexts/userscontext";
-import { useSocialAccounts } from "../contexts/socialaccountcontext";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -19,7 +18,6 @@ export default function BlueskyLoginModal({
   const [loading, setLoading] = useState(false);
   const [siteUrl, setSiteUrl] = useState(""); // 🆕 URL WordPress site
   const [token, setToken] = useState("");
-  const { user } = useUser();
   // const { addSocialAccount } = useSocialAccounts();
   const [errors, setErrors] = useState<{
     siteUrl?: string;
