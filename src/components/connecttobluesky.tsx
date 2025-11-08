@@ -104,7 +104,7 @@ export default function BlueskyLoginModal({
         {/* Close button */}
         <div className="max-w-md mx-auto mt-10 p-4 border rounded-xl shadow-sm">
           <h2 className="text-xl font-semibold mb-4">
-            🔑 Lấy Bearer Token từ WordPress
+            🔑 Connect Website WordPress
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <input
@@ -142,7 +142,7 @@ export default function BlueskyLoginModal({
               disabled={loading}
               className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-400"
             >
-              {loading ? "Đang lấy token..." : "Lấy Token"}
+              {loading ? "Connecting..." : "Connect Website"}
             </button>
           </form>
 
