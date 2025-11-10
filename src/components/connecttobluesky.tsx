@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import HowtoUse from "./howtouse";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export default function BlueskyLoginModal({
   const [loading, setLoading] = useState(false);
   const [siteUrl, setSiteUrl] = useState(""); // 🆕 URL WordPress site
   const [token, setToken] = useState("");
+  const [openHowtoUse, setOpenHowtoUse] = useState(false);
   // const { addSocialAccount } = useSocialAccounts();
   const [errors, setErrors] = useState<{
     siteUrl?: string;
@@ -134,6 +136,13 @@ export default function BlueskyLoginModal({
               onChange={(e) => setAppPassword(e.target.value)}
               className="border p-2 rounded-md"
             />
+            <button onClick={() => setOpenHowtoUse(true)}>
+              How to get app password
+            </button>
+            <HowtoUse
+              isOpen={openHowtoUse}
+              onClose={() => setOpenHowtoUse(false)}
+            ></HowtoUse>
             {errors.appPassword && (
               <p className="text-red-500 text-sm mt-1">{errors.appPassword}</p>
             )}
