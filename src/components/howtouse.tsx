@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -45,7 +44,8 @@ export default function HowtoUse({ isOpen, onClose }: ProfileModalProps) {
             <li>Step 1: Log in to your website admin panel.</li>
             <li>Step 2: Go to Profile → Application Passwords.</li>
             <li>
-              Step 3: Enter your username and click "Add Application Password".
+              Step 3: Enter your username and click &quot;Add Application
+              Password&quot;.
             </li>
             <li>
               Step 4: Save the generated password and return to this platform to
